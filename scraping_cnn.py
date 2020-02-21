@@ -47,8 +47,8 @@ class Scraping():
 
     def writeToCsv(self, data):
         now = datetime.now()
-        filename = 'scrape-cnn-kelompok-7.csv'
-        with open('output/'+filename, 'a+', newline='') as file:
+        # filename = 'scrape-cnn-kelompok-7.csv'
+        with open('output/scrape-cnn-kelompok-7.csv', 'a+', newline='') as file:
             writer = csv.writer(file)
             writer.writerows(data)
 
