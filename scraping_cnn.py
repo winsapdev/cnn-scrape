@@ -1,12 +1,17 @@
 import csv
-import json
 import sys
-from datetime import date, datetime
-from urllib.request import urlopen
+import os
 
 import requests
 from bs4 import BeautifulSoup
 from newspaper import Article
+
+'''
+kelompok 7
+1. winsap
+2. willia
+3. yuli
+'''
 
 
 class Scraping():
@@ -15,7 +20,7 @@ class Scraping():
         self.cnn_page = "https://www.cnnindonesia.com/indeks/"
 
     def initCsvFile(self):
-        with open('output/scrape-cnn-kelompok-7.csv', 'a+', newline='') as write_obj:
+        with open('output/scrape-cnn-kelompok-7.csv', 'a+', newline='', encoding='utf-8') as write_obj:
             # Create a writer object from csv module
             csv_writer = csv.writer(write_obj)
             # Add header
@@ -46,9 +51,7 @@ class Scraping():
         return d.replace("\n", "")
 
     def writeToCsv(self, data):
-        now = datetime.now()
-        # filename = 'scrape-cnn-kelompok-7.csv'
-        with open('output/scrape-cnn-kelompok-7.csv', 'a+', newline='') as file:
+        with open('output/scrape-cnn-kelompok-7.csv', 'a+', newline='', encoding='utf-8') as file:
             writer = csv.writer(file)
             writer.writerows(data)
 
@@ -68,7 +71,7 @@ class Scraping():
 
                 isi_berita = news.text
                 if isi_berita == "":
-                    isi_berita = getIsiBerita(link)
+                    isi_berita = self.getIsiBerita(link)
 
                 row_list = [
                     link,
@@ -82,7 +85,7 @@ class Scraping():
                 ]
 
                 news_list.append(row_list)
-            except Exception as e:
+            except Exception:
                 pass
 
         self.writeToCsv(news_list)
@@ -92,4 +95,8 @@ if __name__ == "__main__":
     scrape = Scraping()
     scrape.initCsvFile()
     for i in range(int(sys.argv[1])):
+        # uncomment line below if you want to put in haddop hdfs
+        # run shell command from python
+        # hdfs_cmd = 'hadoop fs -put /home/cloudera/kelompok_7/output/scrape-cnn-kelompok-7.csv  /user/cloudera/kelompok_7/'
+        # os.system(hdfs_cmd)
         scrape.doScrape(i+1)
