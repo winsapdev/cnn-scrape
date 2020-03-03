@@ -1,6 +1,4 @@
 import csv
-import sys
-import os
 
 import requests
 from bs4 import BeautifulSoup
@@ -24,19 +22,15 @@ articles = soup.find_all('article')
 # print(articles)
 links = []
 for i in articles:
-    links.append(i.find('a')['href'])
+    if i.find('a')['href'] == '#':
+        continue
+    else:
+        links.append(i.find('a')['href'])
 
-# remove '#'
-stopword = ['#']
-for i in links:
-    if i in stopword:
-        links.remove(i)
 
-# print(links)
-# print(len(links))
 all_row_list = []
-i = 0
-for link in links:
+i = 1
+for link in links[:25]:
     print("Scraping: "+link)
 
     news = Article(link)
@@ -44,6 +38,7 @@ for link in links:
     try:
         news.parse()
         news.nlp()
+        kategori = link.split('/')[3]
 
         row_list = [
             i,
@@ -51,10 +46,11 @@ for link in links:
             news.publish_date,
             news.title,
             news.text.replace("\n", ""),
-            'teknologi'
+            kategori
         ]
         i += 1
         all_row_list.append(row_list)
+
     except Exception:
         pass
 
